@@ -231,7 +231,7 @@ function Game(props: GameProps) {
     if (currentGuess === target) {
       setHint(gameOver("won"));
       setGameState(GameState.Won);
-    } else if (guesses.length + 1 === props.maxGuesses) {
+    } else if (guesses.length === props.maxGuesses) {
       setHint(gameOver("lost"));
       setGameState(GameState.Lost);
     } else {
