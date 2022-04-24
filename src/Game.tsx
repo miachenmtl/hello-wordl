@@ -107,6 +107,9 @@ function Game(props: GameProps) {
       ? `Invalid challenge string, playing random game.`
       : `Make your first guess!`
   );
+
+  const [hasRevealed, setHasRevealed] = useState<boolean>(false);
+
   const getCurrentSeedParams = useCallback(
     () => `?seed=${seed}&length=${WORD_LENGTH}&game=${gameNumber}`,
     [gameNumber]
@@ -133,6 +136,8 @@ function Game(props: GameProps) {
     setCurrentGuess("");
     setGameState(GameState.Playing);
     setGameNumber((x) => x + 1);
+    setHasRevealed(false);
+    setHasRevealed(true);
   };
 
   async function share(copiedHint: string, text?: string) {
@@ -275,7 +280,8 @@ function Game(props: GameProps) {
       const score = lockedIn
         ? getCluedWordScore(cluedLetters)
         : getWordScore(guess);
-      const hasScore = i < guesses.length || i === 0;
+      const hasScore =
+        i < guesses.length || (i === guesses.length && currentGuess.length > 0);
       let annotation = hasScore ? score.toString() : null;
       return (
         <Row
@@ -288,8 +294,9 @@ function Game(props: GameProps) {
               ? RowState.Editing
               : RowState.Pending
           }
-          cluedLetters={cluedLetters}
+          serializedCluedLetters={JSON.stringify(cluedLetters)}
           annotation={annotation}
+          setHasRevealed={setHasRevealed}
         />
       );
     });
@@ -322,6 +329,7 @@ function Game(props: GameProps) {
         layout={props.keyboardLayout}
         letterInfo={letterInfo}
         onKey={onKey}
+        hasRevealed={hasRevealed}
       />
       <div className="Game-seed-info">
         {challenge
