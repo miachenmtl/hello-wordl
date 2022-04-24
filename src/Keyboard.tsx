@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Clue, clueClass } from "./clue";
 import letterPoints from "./letterPoints";
 
@@ -5,9 +6,14 @@ interface KeyboardProps {
   layout: string;
   letterInfo: Map<string, Clue>;
   onKey: (key: string) => void;
+  hasRevealed?: boolean;
 }
 
 export function Keyboard(props: KeyboardProps) {
+  const { hasRevealed } = props;
+  const [displayedLetterInfo, setDisplayedLetterInfo] = useState(
+    props.letterInfo
+  );
   const keyboard = props.layout
     .split("-")
     .map((row) =>
@@ -16,13 +22,17 @@ export function Keyboard(props: KeyboardProps) {
         .map((key) => key.replace("B", "Backspace").replace("E", "Enter"))
     );
 
+  useEffect(() => {
+    if (hasRevealed) setDisplayedLetterInfo(props.letterInfo);
+  }, [hasRevealed]); // eslint-disable-line
+
   return (
     <div className="Game-keyboard" aria-hidden="true">
       {keyboard.map((row, i) => (
         <div key={i} className="Game-keyboard-row">
           {row.map((label, j) => {
             let className = "Game-keyboard-button";
-            const clue = props.letterInfo.get(label);
+            const clue = displayedLetterInfo.get(label);
             if (clue !== undefined) {
               className += " " + clueClass(clue);
             }
@@ -43,7 +53,6 @@ export function Keyboard(props: KeyboardProps) {
                   <sub className="Button-subscript">{letterPoints[label]}</sub>
                 </span>
               </button>
-
             );
           })}
         </div>
