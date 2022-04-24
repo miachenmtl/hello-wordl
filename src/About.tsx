@@ -24,12 +24,12 @@ export function About() {
       <Row
         rowState={RowState.LockedIn}
         wordLength={4}
-        cluedLetters={[
+        serializedCluedLetters={JSON.stringify([
           { clue: Clue.Absent, letter: "w" },
           { clue: Clue.Absent, letter: "o" },
           { clue: Clue.Correct, letter: "r" },
           { clue: Clue.Elsewhere, letter: "d" },
-        ]}
+        ])}
       />
       <p>
         <b>W</b> and <b>O</b> aren't in the target word at all.
@@ -53,23 +53,23 @@ export function About() {
       <Row
         rowState={RowState.LockedIn}
         wordLength={4}
-        cluedLetters={[
+        serializedCluedLetters={JSON.stringify([
           { clue: Clue.Correct, letter: "d" },
           { clue: Clue.Correct, letter: "a" },
           { clue: Clue.Correct, letter: "r" },
           { clue: Clue.Absent, letter: "k" },
-        ]}
+        ])}
         annotation={"So close!"}
       />
       <Row
         rowState={RowState.LockedIn}
         wordLength={4}
-        cluedLetters={[
+        serializedCluedLetters={JSON.stringify([
           { clue: Clue.Correct, letter: "d" },
           { clue: Clue.Correct, letter: "a" },
           { clue: Clue.Correct, letter: "r" },
           { clue: Clue.Correct, letter: "t" },
-        ]}
+        ])}
         annotation={"Got it!"}
       />
       <p>
