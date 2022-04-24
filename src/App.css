@@ -9,6 +9,17 @@ body {
 
 .Row {
   display: block;
+  position: relative;
+}
+
+.Row-Score  {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  left: 100%;
+  top: 0;
+  bottom: 0;
+  margin-left: 8px;
 }
 
 .Row-letter {
@@ -22,6 +33,7 @@ body {
   align-items: center;
   text-transform: uppercase;
   font-weight: bold;
+  background-color: #404040;
 }
 .Row-letter-color {
   margin: 2px;
@@ -89,21 +101,6 @@ table.Game-rows > tbody {
   text-align: left
 }
 
-table.Game-rows tr {
-  position: relative;
-}
-
-table.Game-rows tr::after  {
-  position: absolute;
-  content: attr(data-row-score);
-  display: flex;
-  align-items: center;
-  left: 100%;
-  top: 0;
-  bottom: 0;
-  margin-left: 8px;
-}
-
 table.Game-rows tr:last-child::after {
   font-size: 28px;
   color: white;
@@ -164,20 +161,29 @@ table.Game-rows tr:last-child::after {
 
 .letter-correct {
   border: 2px solid rgba(0, 0, 0, 0.3);
-  background-color: rgb(87, 172, 120);
   color: white !important;
+}
+
+.Game-keyboard-button.letter-correct {
+    background-color: rgb(87, 172, 120);
 }
 
 .letter-elsewhere {
   border: 2px dotted rgba(0, 0, 0, 0.3);
-  background-color: #e9c601;
   color: white !important;
+}
+
+.Game-keyboard-button.letter-elsewhere {
+  background-color: #e9c601;
 }
 
 .letter-absent {
   border: 2px solid transparent;
-  background-color: rgb(162, 162, 162);
   color: white !important;
+}
+
+.Game-keyboard-button.letter-absent {
+  background-color: rgb(162, 162, 162);
 }
 
 .BottomRow {
