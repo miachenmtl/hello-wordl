@@ -94,6 +94,7 @@ function Game(props: GameProps) {
   const [guesses, setGuesses] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState<string>("");
   const [totalScore, setTotalScore] = useState<number>(0);
+  const [revealedTotalScore, setRevealedTotalScore] = useState<string>("");
   const [challenge, setChallenge] = useState<string>(initChallenge);
   const [gameNumber, setGameNumber] = useState(parseUrlGameNumber());
   const [target, setTarget] = useState(() => {
@@ -109,6 +110,7 @@ function Game(props: GameProps) {
   );
 
   const [hasRevealed, setHasRevealed] = useState<boolean>(false);
+  const [delayedHint, setDelayedHint] = useState<string>("");
 
   const getCurrentSeedParams = useCallback(
     () => `?seed=${seed}&length=${WORD_LENGTH}&game=${gameNumber}`,
@@ -134,9 +136,10 @@ function Game(props: GameProps) {
     setHint("");
     setGuesses([]);
     setCurrentGuess("");
+    setRevealedTotalScore("");
     setGameState(GameState.Playing);
     setGameNumber((x) => x + 1);
-    setHasRevealed(false);
+    setHasRevealed(false); // hackiness....
     setHasRevealed(true);
   };
 
@@ -234,16 +237,27 @@ function Game(props: GameProps) {
     setTotalScore(runningScore);
 
     if (currentGuess === target) {
-      setHint(gameOver("won"));
+      setDelayedHint(gameOver("won"));
       setGameState(GameState.Won);
     } else if (guesses.length === props.maxGuesses) {
-      setHint(gameOver("lost"));
+      setDelayedHint(gameOver("lost"));
       setGameState(GameState.Lost);
     } else {
       setHint("");
       speak(describeClue(clue(currentGuess, target)));
     }
   }, [guesses]); // eslint-disable-line
+
+  useEffect(() => {
+    if (hasRevealed) {
+      setRevealedTotalScore(totalScore.toString());
+      if (GameState.Won || GameState.Lost) {
+        setHint(delayedHint);
+        setDelayedHint("");
+        setHasRevealed(false);
+      }
+    }
+  }, [hasRevealed, delayedHint, totalScore]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -302,7 +316,11 @@ function Game(props: GameProps) {
     });
 
   tableRows.push(
-    <BottomRow key="bottom" wordLength={WORD_LENGTH} totalScore={totalScore} />
+    <BottomRow
+      key="bottom"
+      wordLength={WORD_LENGTH}
+      revealedTotalScore={revealedTotalScore}
+    />
   );
 
   return (
@@ -323,7 +341,7 @@ function Game(props: GameProps) {
           margin: "8px 0",
         }}
       >
-        {hint || `\u00a0`}
+        {hint || `\u00a0` /* non-breaking space */}
       </p>
       <Keyboard
         layout={props.keyboardLayout}
