@@ -2,9 +2,17 @@
   box-sizing: border-box;
 }
 
+:root {
+  --green-bg-color: rgb(87, 172, 120);
+}
+
 body {
   text-align: center;
   background-color: #eeeeee;
+}
+
+button {
+  cursor: pointer;
 }
 
 .Row {
@@ -165,7 +173,7 @@ table.Game-rows tr:last-child::after {
 }
 
 .Game-keyboard-button.letter-correct {
-    background-color: rgb(87, 172, 120);
+    background-color: var(--green-bg-color);
 }
 
 .letter-elsewhere {
@@ -322,4 +330,123 @@ a:active {
 .App-container.color-blind .letter-elsewhere,
 .App-container.color-blind .App-about b.yellow-bg {
   background-color: #85c0f9;
+}
+
+.Modal-Overlay {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  left: 0;
+  top: 0;
+}
+
+.Statistics-Popup {
+  position: fixed;
+  width: 360px;
+  background-color:dimgrey;
+  border-radius: 8px;
+}
+
+.Popup-Flexbox {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Popup-Buttons-Container {
+  width: 100%;
+  padding: 12px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.Popup-Buttons-Container button {
+  background-color: var(--green-bg-color);
+  padding: 8px 12px;
+  border-radius: 4px;
+  border-width: 0;
+}
+
+.Histogram-Container {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  width: 270px;
+  height: 120px;
+  margin-bottom: 40px;
+}
+
+.Histogram-Bar {
+  position: relative;
+  background-color: var(--green-bg-color);
+}
+
+.Histogram-Bar:hover {
+  background-color: mediumspringgreen;
+}
+
+.Histogram-Bar:last-child {
+  background-color: firebrick;
+}
+
+.Histogram-Bar:last-child:hover {
+  background-color: orangered;
+}
+
+.Histogram-Bar:first-child::before {
+  position: absolute;
+  content: '';
+  left: 0;
+  top: 100%;
+  border-left: 2px solid white;
+  height: 16px;
+}
+
+.Histogram-Bar:first-child::after {
+  position: absolute;
+  content: '0';
+  left: -4px;
+  top: calc(100% + 20px);
+}
+
+.Histogram-Bar:last-child::before {
+  position: absolute;
+  content: '';
+  left: 0;
+  top: 100%;
+  border-left: 2px solid white;
+  height: 16px;
+}
+
+.Histogram-Bar:last-child::after {
+  position: absolute;
+  content: '100';
+  left: -4px;
+  top: calc(100% + 20px);
+}
+
+.Histogram-Tooltip {
+  position: fixed;
+  width: 84px;
+  height: 32px;
+  color: black;
+  background-color: aliceblue;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.Average-Line {
+  position: absolute;
+  height: 100%;
+  width: 0;
+  border: 1px solid pink;
+  z-index: 5;
 }

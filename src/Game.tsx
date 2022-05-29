@@ -4,6 +4,7 @@ import { BottomRow } from "./BottomRow";
 import dictionary from "./dictionary.json"; // has different lengths for easier syncing
 import { Clue, clue, CluedLetter, describeClue, violation } from "./clue";
 import { Keyboard } from "./Keyboard";
+import StatisticsPopup from "./StatisticsPopup";
 import targetList from "./targets.json";
 import {
   describeSeed,
@@ -89,6 +90,36 @@ function parseUrlGameNumber(): number {
   return gameNumber >= 1 && gameNumber <= 1000 ? gameNumber : 1;
 }
 
+const getScoreHistory = () => {
+  try {
+    const item = window.localStorage.getItem("SCORE_HISTORY");
+    if (item === null) return [];
+    const parsedItem = JSON.parse(item);
+    if (!Array.isArray(parsedItem)) return [];
+    return parsedItem;
+  } catch (e) {
+    return [];
+  }
+};
+
+const resetScoreHistory = () => {
+  if (window.confirm("Are you sure you want to clear your scores?"))
+    window.localStorage.removeItem("SCORE_HISTORY");
+};
+
+function useStatistics(): {
+  getScoreHistory: () => number[];
+  addScore: (newScore: number) => void;
+  resetScoreHistory: () => void;
+} {
+  const addScore = (newScore: number) => {
+    const scoreHistory = getScoreHistory();
+    scoreHistory.push(newScore);
+    window.localStorage.setItem("SCORE_HISTORY", JSON.stringify(scoreHistory));
+  };
+  return { getScoreHistory, addScore, resetScoreHistory };
+}
+
 function Game(props: GameProps) {
   const [gameState, setGameState] = useState(GameState.Playing);
   const [guesses, setGuesses] = useState<string[]>([]);
@@ -111,6 +142,9 @@ function Game(props: GameProps) {
 
   const [hasRevealed, setHasRevealed] = useState<boolean>(false);
   const [delayedHint, setDelayedHint] = useState<string>("");
+  const [hasOpenPopup, setHasOpenPopup] = useState<boolean>(false);
+  const { getScoreHistory, addScore, resetScoreHistory } = useStatistics();
+  const scoreHistory = getScoreHistory();
 
   const getCurrentSeedParams = useCallback(
     () => `?seed=${seed}&length=${WORD_LENGTH}&game=${gameNumber}`,
@@ -224,6 +258,7 @@ function Game(props: GameProps) {
       const message = `You ${verbed}! The answer was ${target.toUpperCase()}. Your score was ${score}. (Enter to ${
         challenge ? "play a random game" : "play again"
       })`;
+      addScore(score);
       return message;
     };
 
@@ -388,6 +423,21 @@ function Game(props: GameProps) {
           </button>
         )}
       </p>
+      <button
+        onClick={() => {
+          setHasOpenPopup(true);
+        }}
+      >
+        Statistics
+      </button>
+      <StatisticsPopup
+        isOpen={hasOpenPopup}
+        scoreHistory={scoreHistory}
+        resetScoreHistory={resetScoreHistory}
+        closePopup={() => {
+          setHasOpenPopup(false);
+        }}
+      />
     </div>
   );
 }
